@@ -2,16 +2,16 @@ from flask import Blueprint
 
 auth = Blueprint('auth', __name__)
 
-@auth.route('/login')
+@auth.route('/sign-up')
 def login():
-    return "Login Page"
+    return "SignUp Page"
 
-@auth.route('/signup')
+@auth.route('/POS')
 def signup():
-    return "Signup Page"
+    return "Point of Sale Page"
 
-@auth.route('/logout')
+@auth.route('/inventory')
 def logout():
-    return "Logout Page"
+    return "Inventory Page"
 
 
