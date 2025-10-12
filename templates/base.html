@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}ETERNOS{% endblock %}</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Montserrat:wght@300;400;500&display=swap");
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --bg-black: #0a0a0a;
+        --bg-dark: #121212;
+        --text-white: #ffffff;
+        --text-gray: #a0a0a0;
+        --accent-glow: #ffffff;
+        --border-color: #2a2a2a;
+      }
+
+      body {
+        font-family: "Montserrat", sans-serif;
+        background-color: var(--bg-black);
+        color: var(--text-white);
+        overflow-x: hidden;
+        position: relative;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+          circle at 50% 50%,
+          rgba(255, 255, 255, 0.03) 0%,
+          transparent 50%
+        );
+        pointer-events: none;
+        z-index: 1;
+        animation: smokeFloat 20s infinite alternate;
+      }
+
+      @keyframes smokeFloat {
+        0% {
+          transform: translate(0, 0);
+        }
+        100% {
+          transform: translate(30px, -30px);
+        }
+      }
+
+      nav {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        background: rgba(10, 10, 10, 0.95);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--border-color);
+        padding: 1.5rem 5%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 1000;
+        transition: all 0.3s ease;
+      }
+
+      nav:hover {
+        border-bottom-color: rgba(255, 255, 255, 0.2);
+      }
+
+      .logo {
+        font-family: "Cinzel", serif;
+        font-size: 2rem;
+        font-weight: 700;
+        letter-spacing: 4px;
+        text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        transition: all 0.3s ease;
+      }
+
+      .logo:hover {
+        text-shadow: 0 0 30px rgba(255, 255, 255, 0.8);
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 3rem;
+        list-style: none;
+        align-items: center;
+      }
+
+      .nav-links a {
+        color: var(--text-gray);
+        text-decoration: none;
+        font-size: 0.9rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        transition: all 0.3s ease;
+        position: relative;
+      }
+
+      .nav-links a::after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 0;
+        height: 1px;
+        background: var(--text-white);
+        transition: width 0.3s ease;
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+      }
+
+      .nav-links a:hover {
+        color: var(--text-white);
+      }
+
+      .nav-links a:hover::after {
+        width: 100%;
+      }
+
+      main {
+        position: relative;
+        z-index: 2;
+        min-height: 100vh;
+        padding-top: 100px;
+      }
+
+      .btn {
+        padding: 1rem 2.5rem;
+        background: transparent;
+        color: var(--text-white);
+        border: 1px solid var(--text-white);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        font-family: "Montserrat", sans-serif;
+        text-decoration: none;
+        display: inline-block;
+      }
+
+      .btn::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: var(--text-white);
+        transition: left 0.3s ease;
+        z-index: -1;
+      }
+
+      .btn:hover {
+        color: var(--bg-black);
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+      }
+
+      .btn:hover::before {
+        left: 0;
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        letter-spacing: 1px;
+        font-size: 0.9rem;
+        color: var(--text-gray);
+      }
+
+      .form-group input,
+      .form-group textarea,
+      .form-group select {
+        width: 100%;
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--border-color);
+        color: var(--text-white);
+        font-family: "Montserrat", sans-serif;
+        transition: all 0.3s ease;
+      }
+
+      .form-group input:focus,
+      .form-group textarea:focus,
+      .form-group select:focus {
+        outline: none;
+        border-color: var(--text-white);
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+      }
+
+      .card {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--border-color);
+        padding: 2rem;
+        transition: all 0.3s ease;
+      }
+
+      .card:hover {
+        border-color: rgba(255, 255, 255, 0.2);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        transform: translateY(-5px);
+      }
+
+      footer {
+        background: var(--bg-dark);
+        border-top: 1px solid var(--border-color);
+        padding: 3rem 5%;
+        text-align: center;
+        margin-top: 5rem;
+      }
+
+      footer p {
+        color: var(--text-gray);
+        letter-spacing: 2px;
+        font-size: 0.85rem;
+      }
+
+      @media (max-width: 768px) {
+        nav {
+          flex-direction: column;
+          gap: 1rem;
+        }
+
+        .nav-links {
+          flex-direction: column;
+          gap: 1rem;
+        }
+
+        main {
+          padding-top: 200px;
+        }
+      }
+
+      ::-webkit-scrollbar {
+        width: 10px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: var(--bg-black);
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: var(--border-color);
+        border-radius: 5px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: var(--text-gray);
+      }
+    </style>
+    {% block extra_css %}{% endblock %}
+  </head>
+  <body>
+    <nav>
+      <div class="logo">ETERNOS</div>
+      <ul class="nav-links">
+        {% if session.role == 'admin' %}
+        <li><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+        <li><a href="{{ url_for('admin_pos') }}">POS</a></li>
+        <li><a href="{{ url_for('admin_inventory') }}">Inventory</a></li>
+        <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        {% elif session.user_id %}
+        <li><a href="{{ url_for('shop') }}">Shop</a></li>
+        <li><a href="{{ url_for('about') }}">About</a></li>
+        <li><a href="{{ url_for('cart') }}">Cart</a></li>
+        <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        {% else %}
+        <li><a href="{{ url_for('index') }}">Home</a></li>
+        <li><a href="{{ url_for('about') }}">About</a></li>
+        <li><a href="{{ url_for('login') }}">Login</a></li>
+        <li><a href="{{ url_for('register') }}">Register</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+
+    <main>{% block content %}{% endblock %}</main>
+
+    <footer>
+      <p>© 2024 ETERNOS - TIMELESS FASHION</p>
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+  </body>
+</html>
