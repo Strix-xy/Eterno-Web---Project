@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eterno Web Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <header>
+    <h1>Eterno Web System</h1>
+    <nav>
+      <ul>
+        <li><a href="{{ url_for('index') }}">Home</a></li>
+        <li><a href="{{ url_for('pos') }}">POS</a></li>
+        <li><a href="{{ url_for('items') }}">Items</a></li>
+        <li><a href="{{ url_for('reports') }}">Reports</a></li>
+        <li><a href="{{ url_for('settings') }}">Settings</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="intro">
+      <h2>Welcome to Eterno Web</h2>
+      <p>Manage your business efficiently with our POS and inventory tools.</p>
+    </section>
+
+    <section class="cards">
+      <div class="card">
+        <a href="{{ url_for('pos') }}">
+          <h3>POS</h3>
+          <p>Access the Point of Sale system.</p>
+        </a>
+      </div>
+      <div class="card">
+        <a href="{{ url_for('items') }}">
+          <h3>Item Management</h3>
+          <p>View, add, or edit your products.</p>
+        </a>
+      </div>
+      <div class="card">
+        <a href="{{ url_for('reports') }}">
+          <h3>Reports</h3>
+          <p>Check your sales and performance data.</p>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Eterno Web Project</p>
+  </footer>
+</body>
+</html>
