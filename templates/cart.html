@@ -1,0 +1,539 @@
+{% extends "base.html" %} {% block title %}Cart - ETERNOS{% endblock %} {% block
+extra_css %}
+<style>
+  .cart-container {
+    padding: 2rem 5%;
+    max-width: 1400px;
+    margin: 0 auto;
+    min-height: calc(100vh - 100px);
+  }
+
+  .cart-header {
+    font-family: "Cinzel", serif;
+    font-size: 3rem;
+    letter-spacing: 5px;
+    text-align: center;
+    margin-bottom: 3rem;
+    text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+  }
+
+  .cart-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 3rem;
+  }
+
+  .cart-items {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .cart-item {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: 150px 1fr auto;
+    gap: 2rem;
+    align-items: center;
+    transition: all 0.3s ease;
+  }
+
+  .cart-item:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  }
+
+  .item-image {
+    width: 150px;
+    height: 150px;
+    background: rgba(255, 255, 255, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .item-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .item-placeholder {
+    font-family: "Cinzel", serif;
+    font-size: 3rem;
+    color: rgba(255, 255, 255, 0.1);
+  }
+
+  .item-details {
+    flex: 1;
+  }
+
+  .item-name {
+    font-family: "Cinzel", serif;
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+    margin-bottom: 0.5rem;
+  }
+
+  .item-price {
+    color: var(--text-gray);
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+
+  .item-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .qty-control {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border-color);
+  }
+
+  .qty-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-white);
+    font-size: 1.2rem;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+  }
+
+  .qty-btn:hover {
+    color: var(--text-white);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  }
+
+  .qty-display {
+    font-size: 1.2rem;
+    min-width: 40px;
+    text-align: center;
+  }
+
+  .item-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 1rem;
+  }
+
+  .item-total {
+    font-size: 1.8rem;
+    font-weight: 600;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+  }
+
+  .remove-btn {
+    color: #ff4444;
+    background: transparent;
+    border: 1px solid #ff4444;
+    padding: 0.5rem 1.5rem;
+    cursor: pointer;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+  }
+
+  .remove-btn:hover {
+    background: #ff4444;
+    color: white;
+    box-shadow: 0 0 20px rgba(255, 68, 68, 0.5);
+  }
+
+  .cart-summary {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    padding: 2rem;
+    position: sticky;
+    top: 120px;
+    height: fit-content;
+  }
+
+  .summary-title {
+    font-family: "Cinzel", serif;
+    font-size: 1.8rem;
+    letter-spacing: 3px;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .summary-row:last-of-type {
+    border-bottom: 2px solid var(--border-color);
+    font-size: 1.3rem;
+    font-weight: 600;
+    padding: 1.5rem 0;
+    margin-bottom: 2rem;
+  }
+
+  .summary-total {
+    font-size: 2rem;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+  }
+
+  .payment-section {
+    margin-bottom: 1.5rem;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+  }
+
+  .payment-title {
+    font-family: "Cinzel", serif;
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+
+  .payment-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .payment-option {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .payment-option:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .payment-option input[type="radio"] {
+    margin-right: 1rem;
+    cursor: pointer;
+  }
+
+  .payment-option label {
+    cursor: pointer;
+    letter-spacing: 1px;
+    flex: 1;
+  }
+
+  .payment-icon {
+    font-size: 1.5rem;
+    margin-left: 0.5rem;
+  }
+
+  .checkout-btn {
+    width: 100%;
+    padding: 1.5rem;
+    background: transparent;
+    border: 1px solid var(--text-white);
+    color: var(--text-white);
+    font-size: 1rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .checkout-btn::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: var(--text-white);
+    transition: left 0.3s ease;
+    z-index: -1;
+  }
+
+  .checkout-btn:hover {
+    color: var(--bg-black);
+  }
+
+  .checkout-btn:hover::before {
+    left: 0;
+  }
+
+  .checkout-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .empty-cart-message {
+    text-align: center;
+    padding: 5rem 2rem;
+    grid-column: 1 / -1;
+  }
+
+  .empty-cart-message h2 {
+    font-family: "Cinzel", serif;
+    font-size: 2rem;
+    letter-spacing: 3px;
+    margin-bottom: 1rem;
+    color: var(--text-gray);
+  }
+
+  .empty-cart-message a {
+    display: inline-block;
+    margin-top: 2rem;
+  }
+
+  @media (max-width: 1024px) {
+    .cart-content {
+      grid-template-columns: 1fr;
+    }
+
+    .cart-summary {
+      position: relative;
+      top: 0;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .cart-item {
+      grid-template-columns: 1fr;
+      text-align: center;
+    }
+
+    .item-controls {
+      justify-content: center;
+    }
+
+    .item-actions {
+      align-items: center;
+    }
+  }
+</style>
+{% endblock %} {% block content %}
+<div class="cart-container">
+  <h1 class="cart-header">YOUR CART</h1>
+
+  <div class="cart-content">
+    {% if cart_items %}
+    <div class="cart-items">
+      {% for cart_item, product in cart_items %}
+      <div class="cart-item">
+        <div class="item-image">
+          {% if product.image_url %}
+          <img src="{{ product.image_url }}" alt="{{ product.name }}" />
+          {% else %}
+          <div class="item-placeholder">E</div>
+          {% endif %}
+        </div>
+
+        <div class="item-details">
+          <h3 class="item-name">{{ product.name }}</h3>
+          <div class="item-price">${{ "%.2f"|format(product.price) }} each</div>
+          <div class="item-controls">
+            <div class="qty-control">
+              <button
+                class="qty-btn"
+                onclick="updateQuantity('{{ cart_item.id }}', '{{ cart_item.quantity }}', -1)"
+              >
+                −
+              </button>
+              <span class="qty-display">{{ cart_item.quantity }}</span>
+              <button
+                class="qty-btn"
+                onclick="updateQuantity('{{ cart_item.id }}', '{{ cart_item.quantity }}', '+1')"
+              >
+                +
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="item-actions">
+          <div class="item-total">
+            ${{ "%.2f"|format(product.price * cart_item.quantity) }}
+          </div>
+          <button class="remove-btn" onclick="removeItem('{{ cart_item.id }}')">
+            Remove
+          </button>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="cart-summary">
+      <h2 class="summary-title">SUMMARY</h2>
+
+      {% set total = namespace(value=0) %} {% for cart_item, product in
+      cart_items %} {% set total.value = total.value + (product.price *
+      cart_item.quantity) %} {% endfor %}
+
+      <div class="summary-row">
+        <span>Subtotal:</span>
+        <span>${{ "%.2f"|format(total.value) }}</span>
+      </div>
+
+      <div class="summary-row">
+        <span>Shipping:</span>
+        <span>Free</span>
+      </div>
+
+      <div class="summary-row">
+        <span>TOTAL:</span>
+        <span class="summary-total">${{ "%.2f"|format(total.value) }}</span>
+      </div>
+
+      <div class="payment-section">
+        <div class="payment-title">PAYMENT METHOD</div>
+        <div class="payment-options">
+          <div class="payment-option">
+            <input
+              type="radio"
+              id="credit-card"
+              name="payment"
+              value="credit_card"
+              checked
+            />
+            <label for="credit-card">Credit / Debit Card</label>
+            <span class="payment-icon">💳</span>
+          </div>
+
+          <div class="payment-option">
+            <input type="radio" id="paypal" name="payment" value="paypal" />
+            <label for="paypal">PayPal</label>
+            <span class="payment-icon">🅿️</span>
+          </div>
+
+          <div class="payment-option">
+            <input type="radio" id="gcash" name="payment" value="gcash" />
+            <label for="gcash">GCash</label>
+            <span class="payment-icon">💰</span>
+          </div>
+
+          <div class="payment-option">
+            <input type="radio" id="cod" name="payment" value="cod" />
+            <label for="cod">Cash on Delivery</label>
+            <span class="payment-icon">💵</span>
+          </div>
+        </div>
+      </div>
+
+      <button class="checkout-btn" data-total="{{ "%.2f"|format(total.value) }}" onclick="checkoutBtnHandler(this)">
+        Proceed to Checkout
+      </button>
+    </div>
+
+    {% else %}
+    <div class="empty-cart-message">
+      <h2>YOUR CART IS EMPTY</h2>
+      <p style="color: var(--text-gray); letter-spacing: 2px">
+        Explore our collection and discover the eternal
+      </p>
+      <a href="{{ url_for('shop') }}" class="btn">SHOP NOW</a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %} {% block extra_js %}
+<script>
+  function updateQuantity(cartId, currentQty, change) {
+    const newQty = currentQty + change;
+    if (newQty < 1) {
+      removeItem(cartId);
+      return;
+    }
+    location.reload();
+  }
+
+  async function removeItem(cartId) {
+    if (!confirm("Remove this item from cart?")) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/cart/remove/${cartId}`, {
+        method: "DELETE",
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        location.reload();
+      } else {
+        alert("Error: " + data.error);
+      }
+    } catch (error) {
+      alert("Error: " + error.message);
+    }
+  }
+
+  function checkoutBtnHandler(btn) {
+    const total = parseFloat(btn.getAttribute("data-total"));
+    checkout(total);
+  }
+
+  async function checkout(total) {
+    // Get selected payment method
+    const paymentMethod = document.querySelector(
+      'input[name="payment"]:checked'
+    );
+
+    if (!paymentMethod) {
+      alert("Please select a payment method");
+      return;
+    }
+
+    const paymentValue = paymentMethod.value;
+    const paymentLabel = paymentMethod.nextElementSibling.textContent;
+
+    try {
+      const response = await fetch("/checkout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          payment_method: paymentValue,
+          total: total,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        alert(
+          `Order placed successfully!\n\nOrder ID: ${
+            data.order_id
+          }\nPayment Method: ${paymentLabel}\nTotal: $${total.toFixed(
+            2
+          )}\n\nThank you for shopping at ETERNOS!`
+        );
+        window.location.href = "/shop";
+      } else {
+        alert("Error: " + data.error);
+      }
+    } catch (error) {
+      alert("Error: " + error.message);
+    }
+  }
+</script>
+{% endblock %}
