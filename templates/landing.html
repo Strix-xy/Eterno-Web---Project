@@ -1,0 +1,157 @@
+{% extends "base.html" %} {% block title %}ETERNOS - Timeless Fashion{% endblock
+%} {% block extra_css %}
+<style>
+  .hero {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: "";
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0.05) 1px,
+      transparent 1px
+    );
+    background-size: 50px 50px;
+    animation: gridMove 30s linear infinite;
+  }
+
+  @keyframes gridMove {
+    0% {
+      transform: translate(0, 0);
+    }
+    100% {
+      transform: translate(50px, 50px);
+    }
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero h1 {
+    font-family: "Cinzel", serif;
+    font-size: 6rem;
+    font-weight: 700;
+    letter-spacing: 10px;
+    margin-bottom: 1rem;
+    text-shadow: 0 0 40px rgba(255, 255, 255, 0.5);
+    animation: glowPulse 3s infinite alternate;
+  }
+
+  @keyframes glowPulse {
+    0% {
+      text-shadow: 0 0 40px rgba(255, 255, 255, 0.5);
+    }
+    100% {
+      text-shadow: 0 0 60px rgba(255, 255, 255, 0.8);
+    }
+  }
+
+  .hero p {
+    font-size: 1.2rem;
+    letter-spacing: 4px;
+    color: var(--text-gray);
+    margin-bottom: 3rem;
+    text-transform: uppercase;
+  }
+
+  .cta-buttons {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+  }
+
+  .features {
+    padding: 5rem 5%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 3rem;
+  }
+
+  .feature-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    padding: 3rem 2rem;
+    text-align: center;
+    transition: all 0.3s ease;
+  }
+
+  .feature-card:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-10px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+  }
+
+  .feature-card h3 {
+    font-family: "Cinzel", serif;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    letter-spacing: 3px;
+  }
+
+  .feature-card p {
+    color: var(--text-gray);
+    line-height: 1.8;
+    letter-spacing: 1px;
+  }
+
+  @media (max-width: 768px) {
+    .hero h1 {
+      font-size: 3rem;
+    }
+
+    .cta-buttons {
+      flex-direction: column;
+    }
+  }
+</style>
+{% endblock %} {% block content %}
+<section class="hero">
+  <div class="hero-content">
+    <h1>ETERNOS</h1>
+    <p>Where Style Transcends Time</p>
+    <div class="cta-buttons">
+      <a href="{{ url_for('shop') }}" class="btn">Explore Collection</a>
+      <a href="{{ url_for('about') }}" class="btn">Our Story</a>
+    </div>
+  </div>
+</section>
+
+<section class="features">
+  <div class="feature-card">
+    <h3>TIMELESS</h3>
+    <p>
+      Designs that defy trends and embrace eternity. Each piece is crafted to
+      remain relevant across generations.
+    </p>
+  </div>
+
+  <div class="feature-card">
+    <h3>QUALITY</h3>
+    <p>
+      Premium materials and meticulous craftsmanship ensure longevity in every
+      garment we create.
+    </p>
+  </div>
+
+  <div class="feature-card">
+    <h3>MYSTERY</h3>
+    <p>
+      Fashion shrouded in darkness and elegance. Embrace the enigmatic allure of
+      the ETERNOS aesthetic.
+    </p>
+  </div>
+</section>
+{% endblock %}
