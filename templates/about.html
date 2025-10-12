@@ -1,0 +1,184 @@
+{% extends "base.html" %} {% block title %}About - ETERNOS{% endblock %} {%
+block extra_css %}
+<style>
+  .about-hero {
+    height: 60vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .about-hero h1 {
+    font-family: "Cinzel", serif;
+    font-size: 5rem;
+    letter-spacing: 8px;
+    margin-bottom: 1rem;
+    text-shadow: 0 0 40px rgba(255, 255, 255, 0.5);
+  }
+
+  .about-hero p {
+    font-size: 1.3rem;
+    color: var(--text-gray);
+    letter-spacing: 3px;
+  }
+
+  .about-content {
+    padding: 5rem 5%;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .about-section {
+    margin-bottom: 5rem;
+  }
+
+  .about-section h2 {
+    font-family: "Cinzel", serif;
+    font-size: 2.5rem;
+    letter-spacing: 4px;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+
+  .about-text {
+    color: var(--text-gray);
+    line-height: 2;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .values-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 3rem;
+    margin-top: 3rem;
+  }
+
+  .value-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    padding: 3rem 2rem;
+    text-align: center;
+    transition: all 0.3s ease;
+  }
+
+  .value-card:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-10px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+  }
+
+  .value-icon {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+  }
+
+  .value-card h3 {
+    font-family: "Cinzel", serif;
+    font-size: 1.5rem;
+    letter-spacing: 3px;
+    margin-bottom: 1rem;
+  }
+
+  .value-card p {
+    color: var(--text-gray);
+    line-height: 1.8;
+    letter-spacing: 1px;
+  }
+
+  .story-section {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    padding: 4rem;
+    margin: 5rem 0;
+  }
+</style>
+{% endblock %} {% block content %}
+<div class="about-hero">
+  <h1>ABOUT US</h1>
+  <p>The Story Behind The Shadow</p>
+</div>
+
+<div class="about-content">
+  <div class="about-section">
+    <h2>OUR PHILOSOPHY</h2>
+    <p class="about-text">
+      ETERNOS was born from the belief that true style transcends time. In a
+      world of fleeting trends, we create garments that embody permanence,
+      mystery, and undeniable elegance. Each piece is designed to exist beyond
+      the constraints of seasons and eras, crafted for those who dare to embrace
+      the eternal.
+    </p>
+  </div>
+
+  <div class="story-section">
+    <h2
+      style="
+        font-family: 'Cinzel', serif;
+        font-size: 2.5rem;
+        letter-spacing: 4px;
+        margin-bottom: 2rem;
+        text-align: center;
+      "
+    >
+      THE ETERNAL VISION
+    </h2>
+    <p class="about-text">
+      Founded in the shadows of conventional fashion, ETERNOS emerged as a
+      sanctuary for those seeking something deeper than mere clothing. We blend
+      darkness with sophistication, creating a unique aesthetic that speaks to
+      the soul. Our designs are not just worn—they are experienced, felt, and
+      lived.
+    </p>
+  </div>
+
+  <div class="about-section">
+    <h2>OUR VALUES</h2>
+    <div class="values-grid">
+      <div class="value-card">
+        <div class="value-icon">◆</div>
+        <h3>TIMELESS</h3>
+        <p>
+          We create fashion that defies the passage of time, remaining relevant
+          through generations.
+        </p>
+      </div>
+
+      <div class="value-card">
+        <div class="value-icon">◇</div>
+        <h3>QUALITY</h3>
+        <p>
+          Every stitch, every fabric choice reflects our unwavering commitment
+          to excellence.
+        </p>
+      </div>
+
+      <div class="value-card">
+        <div class="value-icon">◆</div>
+        <h3>MYSTERY</h3>
+        <p>
+          We embrace the enigmatic, the shadowed, the beautifully dark aspects
+          of style.
+        </p>
+      </div>
+
+      <div class="value-card">
+        <div class="value-icon">◇</div>
+        <h3>INDIVIDUALITY</h3>
+        <p>
+          Each piece empowers the wearer to express their unique, eternal
+          essence.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
