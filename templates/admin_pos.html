@@ -1,0 +1,417 @@
+{% extends "base.html" %} {% block title %}POS System - ETERNOS{% endblock %} {%
+block extra_css %}
+<style>
+  .pos-container {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+    padding: 2rem 5%;
+    min-height: calc(100vh - 100px);
+  }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.5rem;
+    height: fit-content;
+  }
+
+  .product-tile {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    padding: 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .product-tile::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.1),
+      transparent
+    );
+    transition: left 0.5s ease;
+  }
+
+  .product-tile:hover::before {
+    left: 100%;
+  }
+
+  .product-tile:hover {
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  }
+
+  .product-tile h3 {
+    font-family: "Cinzel", serif;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    letter-spacing: 2px;
+  }
+
+  .product-price {
+    font-size: 1.3rem;
+    color: var(--text-white);
+    margin: 1rem 0;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  }
+
+  .product-stock {
+    font-size: 0.85rem;
+    color: var(--text-gray);
+    letter-spacing: 1px;
+  }
+
+  .out-of-stock {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .checkout-panel {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    padding: 2rem;
+    position: sticky;
+    top: 120px;
+    height: fit-content;
+  }
+
+  .checkout-panel h2 {
+    font-family: "Cinzel", serif;
+    font-size: 1.8rem;
+    margin-bottom: 2rem;
+    letter-spacing: 3px;
+    text-align: center;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+  }
+
+  .cart-items {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-bottom: 2rem;
+  }
+
+  .cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+  }
+
+  .cart-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .cart-item-info {
+    flex: 1;
+  }
+
+  .cart-item-name {
+    font-weight: 500;
+    letter-spacing: 1px;
+    margin-bottom: 0.3rem;
+  }
+
+  .cart-item-price {
+    color: var(--text-gray);
+    font-size: 0.9rem;
+  }
+
+  .cart-item-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .qty-control {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .qty-btn {
+    width: 30px;
+    height: 30px;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-white);
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .qty-btn:hover {
+    border-color: var(--text-white);
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .remove-btn {
+    color: #ff4444;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .remove-btn:hover {
+    color: #ff0000;
+    text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+  }
+
+  .total-section {
+    border-top: 2px solid var(--border-color);
+    padding-top: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .total-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    letter-spacing: 2px;
+  }
+
+  .total-amount {
+    font-size: 2rem;
+    font-weight: 700;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+  }
+
+  .checkout-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .btn-full {
+    width: 100%;
+    padding: 1.2rem;
+  }
+
+  .empty-cart {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--text-gray);
+    letter-spacing: 2px;
+  }
+
+  @media (max-width: 1024px) {
+    .pos-container {
+      grid-template-columns: 1fr;
+    }
+
+    .checkout-panel {
+      position: relative;
+      top: 0;
+    }
+  }
+</style>
+{% endblock %} {% block content %}
+<div class="pos-container">
+  <div class="products-section">
+    <h2
+      style="
+        font-family: 'Cinzel', serif;
+        font-size: 2rem;
+        margin-bottom: 2rem;
+        letter-spacing: 3px;
+      "
+    >
+      SELECT PRODUCTS
+    </h2>
+    <div class="products-grid">
+      {% for product in products %}
+      <div
+        class="product-tile {% if product.stock == 0 %}out-of-stock{% endif %}"
+        {% if product.stock > 0 %}
+        onclick="addToCart({{ product.id }}, '{{ product.name }}', {{ product.price }}, {{ product.stock }})"
+        {% endif %}
+      >
+        <h3>{{ product.name }}</h3>
+        <div class="product-price">${{ "%.2f"|format(product.price) }}</div>
+        <div class="product-stock">
+          {% if product.stock > 0 %} Stock: {{ product.stock }} {% else %} OUT
+          OF STOCK {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="checkout-panel">
+    <h2>CHECKOUT</h2>
+
+    <div class="cart-items" id="cartItems">
+      <div class="empty-cart">No items added</div>
+    </div>
+
+    <div class="total-section">
+      <div class="total-row">
+        <span>TOTAL:</span>
+        <span class="total-amount" id="totalAmount">$0.00</span>
+      </div>
+    </div>
+
+    <div class="checkout-actions">
+      <button class="btn btn-full" onclick="completeSale()">
+        COMPLETE SALE
+      </button>
+      <button class="btn btn-full" onclick="clearCart()">CLEAR CART</button>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block extra_js %}
+<script>
+  let cart = [];
+
+  function addToCart(productId, productName, productPrice, stock) {
+    const existingItem = cart.find((item) => item.product_id === productId);
+
+    if (existingItem) {
+      if (existingItem.quantity < stock) {
+        existingItem.quantity++;
+      } else {
+        alert("Cannot add more. Stock limit reached.");
+        return;
+      }
+    } else {
+      cart.push({
+        product_id: productId,
+        name: productName,
+        price: productPrice,
+        quantity: 1,
+        stock: stock,
+      });
+    }
+
+    renderCart();
+  }
+
+  function updateQuantity(productId, change) {
+    const item = cart.find((item) => item.product_id === productId);
+    if (item) {
+      const newQty = item.quantity + change;
+      if (newQty > 0 && newQty <= item.stock) {
+        item.quantity = newQty;
+        renderCart();
+      } else if (newQty <= 0) {
+        removeFromCart(productId);
+      } else {
+        alert("Cannot exceed available stock.");
+      }
+    }
+  }
+
+  function removeFromCart(productId) {
+    cart = cart.filter((item) => item.product_id !== productId);
+    renderCart();
+  }
+
+  function clearCart() {
+    if (confirm("Clear all items from cart?")) {
+      cart = [];
+      renderCart();
+    }
+  }
+
+  function renderCart() {
+    const cartItemsDiv = document.getElementById("cartItems");
+    const totalAmountSpan = document.getElementById("totalAmount");
+
+    if (cart.length === 0) {
+      cartItemsDiv.innerHTML = '<div class="empty-cart">No items added</div>';
+      totalAmountSpan.textContent = "$0.00";
+      return;
+    }
+
+    let html = "";
+    let total = 0;
+
+    cart.forEach((item) => {
+      const itemTotal = item.price * item.quantity;
+      total += itemTotal;
+
+      html += `
+                <div class="cart-item">
+                    <div class="cart-item-info">
+                        <div class="cart-item-name">${item.name}</div>
+                        <div class="cart-item-price">$${item.price.toFixed(
+                          2
+                        )} each</div>
+                    </div>
+                    <div class="cart-item-controls">
+                        <div class="qty-control">
+                            <button class="qty-btn" onclick="updateQuantity(${
+                              item.product_id
+                            }, -1)">-</button>
+                            <span style="min-width: 30px; text-align: center;">${
+                              item.quantity
+                            }</span>
+                            <button class="qty-btn" onclick="updateQuantity(${
+                              item.product_id
+                            }, 1)">+</button>
+                        </div>
+                        <div>$${itemTotal.toFixed(2)}</div>
+                        <div class="remove-btn" onclick="removeFromCart(${
+                          item.product_id
+                        })">✕</div>
+                    </div>
+                </div>
+            `;
+    });
+
+    cartItemsDiv.innerHTML = html;
+    totalAmountSpan.textContent = `$${total.toFixed(2)}`;
+  }
+
+  async function completeSale() {
+    if (cart.length === 0) {
+      alert("Cart is empty!");
+      return;
+    }
+
+    const total = cart.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0
+    );
+
+    try {
+      const response = await fetch("/admin/sales/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          items: cart,
+          total: total,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        alert("Sale completed successfully!");
+        window.open(`/admin/receipt/${data.sale_id}`, "_blank");
+        cart = [];
+        renderCart();
+        location.reload(); // Reload to update stock numbers
+      } else {
+        alert("Error: " + data.error);
+      }
+    } catch (error) {
+      alert("Error completing sale: " + error.message);
+    }
+  }
+</script>
+{% endblock %}
