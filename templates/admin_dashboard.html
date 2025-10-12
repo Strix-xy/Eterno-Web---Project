@@ -1,0 +1,232 @@
+{% extends "base.html" %} {% block title %}Admin Dashboard - ETERNOS{% endblock
+%} {% block extra_css %}
+<style>
+  .dashboard-container {
+    padding: 2rem 5%;
+    max-width: 1600px;
+    margin: 0 auto;
+  }
+
+  .dashboard-header {
+    text-align: center;
+    margin-bottom: 4rem;
+  }
+
+  .dashboard-header h1 {
+    font-family: "Cinzel", serif;
+    font-size: 3.5rem;
+    letter-spacing: 6px;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 0 30px rgba(255, 255, 255, 0.4);
+  }
+
+  .dashboard-header p {
+    color: var(--text-gray);
+    letter-spacing: 3px;
+    font-size: 1.1rem;
+  }
+
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 4rem;
+  }
+
+  .stat-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    padding: 3rem 2rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stat-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.05),
+      transparent
+    );
+    transition: left 0.5s ease;
+  }
+
+  .stat-card:hover::before {
+    left: 100%;
+  }
+
+  .stat-card:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-5px);
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.7);
+  }
+
+  .stat-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+  }
+
+  .stat-value {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+  }
+
+  .stat-label {
+    font-family: "Cinzel", serif;
+    letter-spacing: 2px;
+    color: var(--text-gray);
+    text-transform: uppercase;
+    font-size: 0.9rem;
+  }
+
+  .quick-actions {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    padding: 3rem;
+  }
+
+  .quick-actions h2 {
+    font-family: "Cinzel", serif;
+    font-size: 2rem;
+    letter-spacing: 3px;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+
+  .actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+  }
+
+  .action-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    color: var(--text-white);
+    display: block;
+  }
+
+  .action-card:hover {
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  }
+
+  .action-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .action-title {
+    font-family: "Cinzel", serif;
+    font-size: 1.3rem;
+    letter-spacing: 2px;
+    margin-bottom: 0.5rem;
+  }
+
+  .action-description {
+    color: var(--text-gray);
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+  }
+</style>
+{% endblock %} {% block content %}
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <h1>ADMIN CONTROL</h1>
+    <p>Manage The Eternal Empire</p>
+  </div>
+
+  <div class="dashboard-grid">
+    <div class="stat-card">
+      <div class="stat-icon">📦</div>
+      <div class="stat-value">0</div>
+      <div class="stat-label">Total Products</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">💰</div>
+      <div class="stat-value">$0</div>
+      <div class="stat-label">Total Revenue</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">🛒</div>
+      <div class="stat-value">0</div>
+      <div class="stat-label">Total Orders</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">👥</div>
+      <div class="stat-value">0</div>
+      <div class="stat-label">Total Customers</div>
+    </div>
+  </div>
+
+  <div class="quick-actions">
+    <h2>QUICK ACTIONS</h2>
+
+    <div class="actions-grid">
+      <a href="{{ url_for('admin_pos') }}" class="action-card">
+        <div class="action-icon">🖥️</div>
+        <div class="action-title">POS SYSTEM</div>
+        <div class="action-description">Process sales and transactions</div>
+      </a>
+
+      <a href="{{ url_for('admin_inventory') }}" class="action-card">
+        <div class="action-icon">📊</div>
+        <div class="action-title">INVENTORY</div>
+        <div class="action-description">Manage products and stock</div>
+      </a>
+
+      <div class="action-card" onclick="exportData()">
+        <div class="action-icon">📥</div>
+        <div class="action-title">EXPORT DATA</div>
+        <div class="action-description">Download Excel reports</div>
+      </div>
+
+      <div class="action-card" onclick="viewAnalytics()">
+        <div class="action-icon">📈</div>
+        <div class="action-title">ANALYTICS</div>
+        <div class="action-description">View sales statistics</div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block extra_js %}
+<script>
+  function exportData() {
+    alert(
+      "Data export functionality: This would trigger the Excel export of all users, products, and sales data."
+    );
+  }
+
+  function viewAnalytics() {
+    alert(
+      "Analytics coming soon! This would display detailed charts and statistics about sales performance."
+    );
+  }
+
+  // Load actual statistics
+  window.addEventListener("DOMContentLoaded", () => {
+    // In a real implementation, you'd fetch these from the backend
+    // For now, keeping them at 0 as placeholders
+  });
+</script>
+{% endblock %}
